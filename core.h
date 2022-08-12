@@ -1,4 +1,5 @@
-﻿#include <opencv2/imgcodecs/imgcodecs.hpp>
+﻿#include <optional>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
@@ -12,7 +13,7 @@ using tcp = boost::asio::ip::tcp;       // <boost/asio/ip/tcp.hpp>
 
 namespace ImageOperations
 {
-    cv::Mat flip_image(const std::vector<char>&);
+    std::optional<cv::Mat> flip_image(const std::vector<char>&);
 }
 
 class http_connection : public std::enable_shared_from_this<http_connection>

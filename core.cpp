@@ -4,11 +4,17 @@
 #include <utility>
 #include "core.h"
 
-cv::Mat ImageOperations::flip_image(const std::vector<char>& raw_bytes)
+std::optional<cv::Mat> ImageOperations::flip_image(const std::vector<char>& raw_bytes)
 {
+    if(raw_bytes.empty())
+        return {};
+
     cv::Mat matrixJprg = cv::imdecode(cv::Mat(raw_bytes), 1);
     cv::Mat dst;
     cv::flip(matrixJprg, dst, 1);
+
+    if(dst.empty())
+        return {};
 
     return dst;
 }
@@ -17,7 +23,6 @@ http_connection::http_connection(tcp::socket socket) : socket_(std::move(socket)
 {
     request_parser_.body_limit(BODY_LIMIT);
 }
-// Initiate the asynchronous operations associated with the connection
 void http_connection::start()
 {
     read_request_async();
@@ -38,11 +43,11 @@ void http_connection::process_request()
     if (request_parser_.get().method() == http::verb::post)
     {
         std::vector<char> raw_bytes{request_parser_.get().body().cbegin(), request_parser_.get().body().cend()};
-        cv::Mat image = ImageOperations::flip_image(raw_bytes);
-        if (!image.empty())
+        auto opt_image = ImageOperations::flip_image(raw_bytes);
+        if (opt_image)
         {
             std::vector<uchar> data;
-            if (cv::imencode(".jpeg", std::move(image), data))
+            if (cv::imencode(".jpeg", std::move(opt_image.value()), data))
             {
                 this->response_ = create_response(std::move(data), request_parser_.get().version());
                 this->async_write();

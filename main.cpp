@@ -1,16 +1,24 @@
 ﻿#include <iostream>
-#include <memory>
-#include <iterator>
-#include <utility>
-#include "test.h"
+#include "core.h"
 
 int main(int argc, char* argv[])
 {
-    auto what = fs::current_path().root_path().wstring();
     try
     {
-        auto const address = net::ip::make_address("127.0.0.1");
-        unsigned short port = static_cast<unsigned short>(std::atoi("5555"));
+    	std::cout << "Server " << BOOST_BEAST_VERSION_STRING << " start" << std::endl;
+    	
+    	if(argc != 3)
+        {
+            std::cerr << "Usage: " << argv[0] << " <address> <port>\n";
+            std::cerr << "  For IPv4, try:\n";
+            std::cerr << "    receiver 0.0.0.0 80\n";
+            std::cerr << "  For IPv6, try:\n";
+            std::cerr << "    receiver 0::0 80\n";
+            return EXIT_FAILURE;
+        }
+
+        auto const address = net::ip::make_address(argv[1]);
+        unsigned short port = static_cast<unsigned short>(std::atoi(argv[2]));
 
         net::io_context ioc{ 1 };
         tcp::acceptor acceptor{ ioc, {address, port} };
@@ -24,5 +32,5 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

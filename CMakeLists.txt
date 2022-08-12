@@ -6,11 +6,11 @@ cmake_minimum_required (VERSION 3.8)
 project ("ImageFlippingHttpServer")
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/bin)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/boost_1_80_0)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/opencv/lib)
 
 add_executable (ImageFlippingHttpServer "main.cpp" "core.h" "core.cpp" )
 
-target_link_libraries( ImageFlippingHttpServer opencv_world460d.dll)
-include_directories("C:\\Users\\Masha\\Desktop\\boost_1_79_0") # TODO: BCP
+target_link_libraries(ImageFlippingHttpServer libopencv_core.so)
+target_link_libraries(ImageFlippingHttpServer libopencv_imgcodecs.so)
